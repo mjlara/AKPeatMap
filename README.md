@@ -1,11 +1,15 @@
 **Alaska Peatland Map**
+Arctic Data Center. doi:10.18739/A2NK3667M
 
-Mark J Lara, Roger Michaelides, Duncan Anderson, Wenqu Chen, Emma Hall, Caroline Ludden,
+**Authors**: Mark J Lara, Roger Michaelides, Duncan Anderson, Wenqu Chen, Emma Hall, Caroline Ludden,
 Aiden Schore, Umakant Mishra, & Sarah Scott.
 
-Alaska Peatland Map (2019-2021). Arctic Data Center. doi:10.18739/A2NK3667M.
+This new peatland extent product is robustly validated using ground and air-, space-borne data products, representing an improved representation of peatlands across the state of Alaska. Although we did validate this product using all available soil organic layer depth data in polar ecoregions, due to the curation of validation products using aerial and space-borne datasets in boreal and maritime ecosystems, this product may be biased in these ecoregions towards open fens and bogs. We have uploaded this dataset in Google Earth Engine (GEE) and can be viewed in the following link (https://laralab-433215.projects.earthengine.app/view/akpeatmap), downloaded from the NSF Arctic Data Center, and available code provided. 
 
-Peatlands cover 3% of the global land surface, yet store 25% of the world’s soil organic carbon. 
+
+
+**Scientific Data 
+**abstract:Peatlands cover 3% of the global land surface, yet store 25% of the world’s soil organic carbon. 
 These organic-rich soils are widespread across permafrost regions, representing nearly 18% of land 
 surface and storing between 500 and 600 petagrams of carbon (PgC). Peat (i.e., partially decomposed 
 thick organic layers) accumulates due to the imbalance between plant production and decomposition 
