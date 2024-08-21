@@ -29,6 +29,19 @@ product identifies peatlands in Polar, Boreal, and Maritime ecoregions in Alaska
 
 */
 
+// BASE MAP SETTING
+
+// Define base map style.
+var basemapStyle = [
+   {stylers: [{saturation: 0}, {lightness: 0}]
+  }
+];
+
+// Set basemap options.
+Map.setOptions('Satellite', {
+    Satellite: basemapStyle
+});
+
 //Visualization
 var palettes = require('users/gena/packages:palettes');
 var palette = palettes.cmocean.Haline[7];
