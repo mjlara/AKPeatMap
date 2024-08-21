@@ -1,0 +1,96 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var flow = ee.FeatureCollection("WWF/HydroSHEDS/v1/FreeFlowingRivers"),
+    ArcDEM = ee.Image("UMN/PGC/ArcticDEM/V3/2m_mosaic"),
+    USGS = ee.Image("USGS/3DEP/10m"),
+    AKbound = ee.FeatureCollection("users/mjlara71/AK_projected_bound"),
+    AKline = ee.FeatureCollection("users/mjlara71/AKline");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+var palettes = require('users/gena/packages:palettes');
+var palette1 = palettes.niccoli.isol[7]
+
+var elev = ArcDEM.clip(AKbound);
+var flow1 = flow.merge(AKline).filterBounds(AKbound)
+var trueColorViz = {
+  bands: ['elevation'],
+  min: 0,
+  max: 1500,
+  gamma: 1.3
+};
+//Map.addLayer(flow1, {}, "flowlines")
+
+
+// Get slope
+var slope = ee.Terrain.slope(USGS);//you can use the ArcDEM, but may be too high res data for your needs
+
+// Create a source image
+var sources = ee.Image().toByte().paint(flow1, 1);
+
+// Mask the sources image with itself.
+sources = sources.updateMask(sources);
+
+// The cost data is generated from slope 
+var cover = slope.select(0);
+
+var slope_in_radians = slope.multiply(3.1415).divide(180);
+
+// Calculate the cost function
+var cost = (
+  ee.Image(0.75).add(
+    ee.Image(0.09).multiply(
+      slope_in_radians.tan().abs()
+    )
+  ).add(
+    ee.Image(14.6).multiply(
+      slope_in_radians.tan().abs()
+      .multiply(ee.Number(2).exp())
+    )
+  )
+).divide(3600);
+
+
+var cost = slope_in_radians.expression(
+  "(0.75 + (0.09 * abs(tan(b(0)))) + (14.6 * (abs(tan(b(0))) * exp(2)))) / 3600*30"
+);
+
+// Compute the cumulative cost to traverse the land cover.
+var cumulativeCost = cost.cumulativeCost({
+  source: sources,
+  maxDistance: 10000 // 10 kilometers
+});
+
+var lines = ee.List.sequence(0, 2500, 60);
+var contourlines = lines.map(function(line) {
+  var mycontour = cumulativeCost
+    .convolve(ee.Kernel.gaussian(1, 3))
+    .subtract(ee.Image.constant(line)).zeroCrossing() 
+    .multiply(ee.Image.constant(line)).toFloat();
+    return mycontour.mask(mycontour);
+});
+contourlines = ee.ImageCollection(contourlines).mosaic();
+
+
+var zones = cumulativeCost.lt(40);
+
+zones = zones.updateMask(zones.neq(0)).clip(AKbound);
+
+var vectors = zones.addBands(cumulativeCost).reduceToVectors({
+  geometry: AKbound,
+  scale: 100,
+  geometryType: 'polygon',
+  eightConnected: false,
+  labelProperty: 'zone',
+  reducer: ee.Reducer.mean(),
+  maxPixels: 1e13
+});
+
+///////////////////////////////////////////////////////////////////////
+//                              Maps                                 //
+///////////////////////////////////////////////////////////////////////
+Map.addLayer(zones, {}, "PeatSuitModel", 0)
+Map.addLayer(cost.clip(AKbound), {min:0, max:.25}, 'Cost per pixel');
+Map.addLayer(cumulativeCost, {"bands":["cumulative_cost"], min:0, max:70, "palette":["ff1f90","2bff89"]},
+  'Cumluative Cost');
+Map.addLayer(contourlines, {min: 0, max: 2200, palette:'black'}, 'Cost contours');
+
+
