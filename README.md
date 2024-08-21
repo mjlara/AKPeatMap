@@ -1,8 +1,9 @@
-Alaska Peatland Map
+**Alaska Peatland Map**
 
 Mark J Lara, Roger Michaelides, Duncan Anderson, Wenqu Chen, Emma Hall, Caroline Ludden,
-Aiden Schore, Umakant Mishra, & Sarah Scott. (2023). Alaska Peatland Map (2019-2021). 
-Arctic Data Center. doi:10.18739/A2NK3667M.
+Aiden Schore, Umakant Mishra, & Sarah Scott.
+
+Alaska Peatland Map (2019-2021). Arctic Data Center. doi:10.18739/A2NK3667M.
 
 Peatlands cover 3% of the global land surface, yet store 25% of the world’s soil organic carbon. 
 These organic-rich soils are widespread across permafrost regions, representing nearly 18% of land 
